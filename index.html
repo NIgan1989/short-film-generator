@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short Film Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #6200ea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #3700b3;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Short Film Generator</h1>
+    </header>
+    <main>
+        <h2>Generate Your Short Film Script</h2>
+        <button onclick="generateScript()">Generate Script</button>
+        <div id="output"></div>
+    </main>
+    <script>
+        async function generateScript() {
+            const response = await fetch('https://api.openai.com/v1/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_API_KEY' // Replace with your OpenAI API Key
+                },
+                body: JSON.stringify({
+                    model: 'text-davinci-003',
+                    prompt: 'Create a short story for a children’s animation film.',
+                    max_tokens: 100
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('output').innerText = data.choices[0].text;
+            } else {
+                document.getElementById('output').innerText = 'Error: Unable to generate script.';
+            }
+        }
+    </script>
+</body>
+
+</html>
