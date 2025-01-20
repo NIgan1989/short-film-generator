@@ -1,28 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
+<nav style="background-color: #6200ea; padding: 15px; text-align: center;">
+    <a href="about.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">О проекте</a>
+    <a href="contact.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Контакты</a>
+    <a href="index.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Главная</a>
+    <a href="login.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Вход</a>
+    <a href="register.html"
+        style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Регистрация</a>
+</nav>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Short Film Generator</title>
+    <title>Генератор короткометражных фильмов</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
+            color: #333;
         }
 
         header {
-            background-color: #333;
+            background-color: #6200ea;
             color: #fff;
-            padding: 10px 20px;
+            padding: 20px 0;
             text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.2rem;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        #user-info {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1rem;
         }
 
         main {
-            padding: 20px;
-            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .active {
+            display: flex;
+        }
+
+        label {
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
+
+        select,
+        input,
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            height: 150px;
         }
 
         button {
@@ -31,9 +99,10 @@
             border: none;
             padding: 10px 20px;
             margin: 10px;
-            font-size: 16px;
+            font-size: 1.1rem;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
         button:hover {
@@ -42,42 +111,178 @@
 
         #output {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: bold;
+            text-align: center;
+            max-width: 600px;
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        video {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Short Film Generator</h1>
+        <h1>Генератор короткометражных фильмов</h1>
+        <div id="user-info"
+            style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 1rem; color: #fff;">
+            <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: bold;">
+                Профиль: <span id="username-display"></span>
+            </a>
+        </div>
+        <nav>
+            <a href="#" onclick="showTab('settings')">Общие настройки</a> |
+            <a href="#" onclick="showTab('scenario')">Сценарий</a> |
+            <a href="#" onclick="showTab('animation')">Анимация</a> |
+            <a href="#" onclick="showTab('audio')">Озвучка</a> |
+            <a href="#" onclick="showTab('compilation')">Компановка</a>
+        </nav>
     </header>
-    <main>
-        <h2>Generate Your Short Film Script</h2>
-        <button onclick="generateScript()">Generate Script</button>
-        <div id="output"></div>
-    </main>
-    <script>
-        async function generateScript() {
-            const response = await fetch('https://api.openai.com/v1/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer YOUR_API_KEY' // Replace with your OpenAI API Key
-                },
-                body: JSON.stringify({
-                    model: 'text-davinci-003',
-                    prompt: 'Create a short story for a children’s animation film.',
-                    max_tokens: 100
-                })
-            });
 
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('output').innerText = data.choices[0].text;
-            } else {
-                document.getElementById('output').innerText = 'Error: Unable to generate script.';
+    <main id="settings" class="active">
+        <h2>Общие настройки</h2>
+        <label for="resolution">Разрешение видео:</label>
+        <select id="resolution">
+            <option value="720p">720p</option>
+            <option value="1080p">1080p</option>
+            <option value="4K">4K</option>
+        </select>
+
+        <label for="audio-quality">Качество аудио:</label>
+        <select id="audio-quality">
+            <option value="low">Низкое</option>
+            <option value="medium">Среднее</option>
+            <option value="high">Высокое</option>
+        </select>
+
+        <label for="animation-style">Стиль анимации:</label>
+        <select id="animation-style">
+            <option value="cartoon">Мультфильм</option>
+            <option value="realistic">Реалистичный</option>
+            <option value="minimalistic">Минимализм</option>
+        </select>
+
+        <button onclick="saveSettings()">Сохранить настройки</button>
+    </main>
+
+    <main id="scenario">
+        <h2>Сценарий</h2>
+        <label for="script-title">Название сценария:</label>
+        <input type="text" id="script-title" placeholder="Введите название сценария">
+
+        <label for="script-description">Описание сценария:</label>
+        <textarea id="script-description" placeholder="Введите описание сценария"></textarea>
+
+        <label for="genre">Выберите жанр:</label>
+        <select id="genre">
+            <option value="Комедия">Комедия</option>
+            <option value="Драма">Драма</option>
+            <option value="Фэнтези">Фэнтези</option>
+            <option value="Научная фантастика">Научная фантастика</option>
+        </select>
+
+        <button onclick="generateScript()">Создать сценарий</button>
+        <button onclick="goToTab('animation')">Создать анимацию</button>
+
+        <div id="output">Здесь появится ваш сценарий.</div>
+    </main>
+
+    <main id="animation">
+        <h2 id="animation-title">Анимация</h2>
+        <video id="animation-preview" controls></video>
+        <button onclick="regenerateAnimation()">Переснять анимацию</button>
+        <button onclick="goToTab('audio')">Перейти к озвучке</button>
+    </main>
+
+    <main id="audio">
+        <h2>Озвучка</h2>
+        <label for="audio-script">Сценарий для озвучки:</label>
+        <textarea id="audio-script" placeholder="Введите текст для озвучки"></textarea>
+
+        <label for="voice-select">Выберите голос:</label>
+        <select id="voice-select">
+            <optgroup label="Женский">
+                <option value="Anna">Анна</option>
+                <option value="Maria">Мария</option>
+                <option value="Elena">Елена</option>
+            </optgroup>
+            <optgroup label="Мужской">
+                <option value="Ivan">Иван</option>
+                <option value="Sergey">Сергей</option>
+                <option value="Alexey">Алексей</option>
+            </optgroup>
+            <optgroup label="Детский">
+                <option value="Vanya">Ваня</option>
+                <option value="Katya">Катя</option>
+                <option value="Dasha">Даша</option>
+            </optgroup>
+        </select>
+
+        <audio id="audio-preview" controls style="display: none;"></audio>
+        <button onclick="regenerateAudio()">Перезаписать</button>
+        <button onclick="goToTab('compilation')">Перейти к компановке</button>
+    </main>
+
+    <main id="compilation">
+        <h2>Компановка</h2>
+        <video id="final-video" controls></video>
+        <button onclick="downloadVideo()">Скачать видео</button>
+    </main>
+
+    <script>
+        const username = localStorage.getItem('loggedInUser') || 'Гость';
+        document.getElementById('username-display').innerText = username;
+
+        function showTab(tabId) {
+            document.querySelectorAll('main').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function saveSettings() {
+            alert('Настройки сохранены.');
+        }
+
+        function generateScript() {
+            const title = document.getElementById('script-title').value;
+            const description = document.getElementById('script-description').value;
+            const genre = document.getElementById('genre').value;
+            const output = document.getElementById('output');
+
+            if (!title || !description) {
+                output.innerText = 'Пожалуйста, заполните все поля.';
+                return;
             }
+
+            output.innerText = `Название: ${title}\nЖанр: ${genre}\nОписание: ${description}\n\nСценарий успешно создан.`;
+            document.getElementById('animation-title').innerText = `Анимация для сценария: ${title}`;
+        }
+
+        function regenerateAnimation() {
+            alert('Анимация переснята.');
+        }
+
+        function regenerateAudio() {
+            document.getElementById('audio-preview').src = '';
+            alert('Вы можете изменить текст и выбрать другой голос для новой озвучки.');
+        }
+
+        function downloadVideo() {
+            alert('Видео скачивается.');
         }
     </script>
 </body>
