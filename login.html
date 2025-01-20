@@ -110,6 +110,15 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                // Если пользователь уже авторизован, перенаправляем на главную страницу
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 </head>
 
 <body>

@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
-<nav style="background-color: #6200ea; padding: 15px; text-align: center;">
-    <a href="about.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">О проекте</a>
-    <a href="contact.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Контакты</a>
-    <a href="index.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Главная</a>
-    <a href="login.html" style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Вход</a>
-    <a href="register.html"
-        style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem;">Регистрация</a>
-</nav>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,18 +27,35 @@
             font-size: 2.5rem;
         }
 
-        nav {
+        nav.main-nav {
             margin-top: 10px;
+            text-align: center;
         }
 
-        nav a {
+        nav.main-nav a {
             color: #fff;
             text-decoration: none;
-            margin: 0 10px;
+            margin: 0 15px;
             font-size: 1.2rem;
         }
 
-        nav a:hover {
+        nav.main-nav a:hover {
+            text-decoration: underline;
+        }
+
+        nav.tab-nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        nav.tab-nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2rem;
+        }
+
+        nav.tab-nav a:hover {
             text-decoration: underline;
         }
 
@@ -141,16 +151,54 @@
         <h1>Генератор короткометражных фильмов</h1>
         <div id="user-info"
             style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 1rem; color: #fff;">
-            <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: bold;">
+            <a href="profile.html" id="profile-link" style="color: #fff; text-decoration: none; font-weight: bold;">
                 Профиль: <span id="username-display"></span>
             </a>
         </div>
-        <nav>
-            <a href="#" onclick="showTab('settings')">Общие настройки</a> |
-            <a href="#" onclick="showTab('scenario')">Сценарий</a> |
-            <a href="#" onclick="showTab('animation')">Анимация</a> |
-            <a href="#" onclick="showTab('audio')">Озвучка</a> |
+
+        <script>
+            const username = localStorage.getItem('loggedInUser') || 'Гость';
+            document.getElementById('username-display').innerText = username;
+
+            // Показать кнопку выхода если пользователь авторизован
+            if (username !== 'Гость') {
+                document.getElementById('logout-btn').style.display = 'inline';
+            }
+
+            // Логика для выхода
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('loggedInUser');
+                alert('Вы вышли из системы.');
+                window.location.href = 'login.html'; // Перенаправление на страницу входа
+            });
+
+            // Перенаправление на страницу профиля
+            const profileLink = document.getElementById('profile-link');
+            profileLink.addEventListener('click', (e) => {
+                if (username === 'Гость') {
+                    e.preventDefault();
+                    alert('Сначала войдите в систему!');
+                    window.location.href = 'login.html';
+                }
+            });
+        </script>
+
+        <!-- Навигация между страницами (Главная, О проекте, Контакты) -->
+        <nav class="main-nav">
+            <a href="about.html">О проекте</a>
+            <a href="contact.html">Контакты</a>
+            <a href="index.html">Главная</a>
+        </nav>
+
+        <!-- Навигация по вкладкам внутри контента -->
+        <nav class="tab-nav">
+            <a href="#" onclick="showTab('settings')">Общие настройки</a>
+            <a href="#" onclick="showTab('scenario')">Сценарий</a>
+            <a href="#" onclick="showTab('animation')">Анимация</a>
+            <a href="#" onclick="showTab('audio')">Озвучка</a>
             <a href="#" onclick="showTab('compilation')">Компановка</a>
+            <a href="#" id="logout-btn"
+                style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 1.2rem; display: none;">Выход</a>
         </nav>
     </header>
 
@@ -162,32 +210,32 @@
             <option value="1080p">1080p</option>
             <option value="4K">4K</option>
         </select>
-
+    
         <label for="audio-quality">Качество аудио:</label>
         <select id="audio-quality">
             <option value="low">Низкое</option>
             <option value="medium">Среднее</option>
             <option value="high">Высокое</option>
         </select>
-
+    
         <label for="animation-style">Стиль анимации:</label>
         <select id="animation-style">
             <option value="cartoon">Мультфильм</option>
             <option value="realistic">Реалистичный</option>
             <option value="minimalistic">Минимализм</option>
         </select>
-
+    
         <button onclick="saveSettings()">Сохранить настройки</button>
     </main>
-
+    
     <main id="scenario">
         <h2>Сценарий</h2>
         <label for="script-title">Название сценария:</label>
         <input type="text" id="script-title" placeholder="Введите название сценария">
-
+    
         <label for="script-description">Описание сценария:</label>
         <textarea id="script-description" placeholder="Введите описание сценария"></textarea>
-
+    
         <label for="genre">Выберите жанр:</label>
         <select id="genre">
             <option value="Комедия">Комедия</option>
@@ -195,25 +243,25 @@
             <option value="Фэнтези">Фэнтези</option>
             <option value="Научная фантастика">Научная фантастика</option>
         </select>
-
+    
         <button onclick="generateScript()">Создать сценарий</button>
         <button onclick="goToTab('animation')">Создать анимацию</button>
-
+    
         <div id="output">Здесь появится ваш сценарий.</div>
     </main>
-
+    
     <main id="animation">
         <h2 id="animation-title">Анимация</h2>
         <video id="animation-preview" controls></video>
         <button onclick="regenerateAnimation()">Переснять анимацию</button>
         <button onclick="goToTab('audio')">Перейти к озвучке</button>
     </main>
-
+    
     <main id="audio">
         <h2>Озвучка</h2>
         <label for="audio-script">Сценарий для озвучки:</label>
         <textarea id="audio-script" placeholder="Введите текст для озвучки"></textarea>
-
+    
         <label for="voice-select">Выберите голос:</label>
         <select id="voice-select">
             <optgroup label="Женский">
@@ -232,31 +280,32 @@
                 <option value="Dasha">Даша</option>
             </optgroup>
         </select>
-
+    
         <audio id="audio-preview" controls style="display: none;"></audio>
         <button onclick="regenerateAudio()">Перезаписать</button>
         <button onclick="goToTab('compilation')">Перейти к компановке</button>
     </main>
-
+    
     <main id="compilation">
         <h2>Компановка</h2>
         <video id="final-video" controls></video>
         <button onclick="downloadVideo()">Скачать видео</button>
     </main>
-
+    
     <script>
-        const username = localStorage.getItem('loggedInUser') || 'Гость';
-        document.getElementById('username-display').innerText = username;
-
+        // Функция для переключения вкладок
         function showTab(tabId) {
             document.querySelectorAll('main').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
         }
 
+        // Функция для сохранения настроек
         function saveSettings() {
             alert('Настройки сохранены.');
+            // Здесь можно добавить логику для сохранения настроек, например в localStorage
         }
 
+        // Функция для генерации сценария
         function generateScript() {
             const title = document.getElementById('script-title').value;
             const description = document.getElementById('script-description').value;
@@ -272,19 +321,31 @@
             document.getElementById('animation-title').innerText = `Анимация для сценария: ${title}`;
         }
 
+        // Функция для пересъемки анимации
         function regenerateAnimation() {
             alert('Анимация переснята.');
+            // Здесь можно добавить логику для пересъемки анимации
         }
 
+        // Функция для пересоздания аудио
         function regenerateAudio() {
             document.getElementById('audio-preview').src = '';
             alert('Вы можете изменить текст и выбрать другой голос для новой озвучки.');
+            // Можно добавить логику для генерации новой озвучки
         }
 
+        // Функция для скачивания видео
         function downloadVideo() {
             alert('Видео скачивается.');
+            // Можно добавить логику для скачивания видео
+        }
+
+        // Функция для перехода к следующей вкладке
+        function goToTab(tabId) {
+            showTab(tabId);
         }
     </script>
+
 </body>
 
 </html>

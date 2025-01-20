@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #6200ea;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.2rem;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #6200ea;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            background-color: #6200ea;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #3700b3;
+        }
+
+        .profile-picture {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6200ea;
+        }
+
+        .profile-picture input {
+            display: block;
+            margin: 10px auto;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Личный кабинет</h1>
+        <nav>
+            <a href="index.html">Главная</a>
+            <a href="about.html">О проекте</a>
+            <a href="contact.html">Контакты</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Профиль пользователя</h2>
+        <div class="profile-picture">
+            <img id="profile-image" src="images/default-avatar.png" alt="Фото профиля">
+            <input type="file" id="upload-picture" accept="image/*" onchange="uploadPicture()">
+        </div>
+
+        <form id="profile-form">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" placeholder="Введите ваше имя">
+
+            <label for="phone">Номер телефона:</label>
+            <input type="tel" id="phone" placeholder="Введите ваш номер телефона">
+
+            <div class="password-wrapper">
+                <label for="current-password">Текущий пароль:</label>
+                <input type="password" id="current-password" placeholder="Введите текущий пароль">
+                <span class="toggle-password" onclick="togglePasswordVisibility('current-password')">Показать</span>
+            </div>
+
+            <div class="password-wrapper">
+                <label for="new-password">Новый пароль:</label>
+                <input type="password" id="new-password" placeholder="Введите новый пароль">
+                <span class="toggle-password" onclick="togglePasswordVisibility('new-password')">Показать</span>
+            </div>
+
+            <button type="button" onclick="saveProfile()">Сохранить изменения</button>
+        </form>
+    </main>
+
+    <script>
+        // Загрузка данных пользователя
+        document.addEventListener("DOMContentLoaded", () => {
+            const username = localStorage.getItem('loggedInUser') || 'Пользователь';
+            const phone = localStorage.getItem('phone') || '';
+            const profileImage = localStorage.getItem('profileImage') || 'images/default-avatar.png';
+
+            document.getElementById('username').value = username;
+            document.getElementById('phone').value = phone;
+            document.getElementById('profile-image').src = profileImage;
+        });
+
+        // Загрузка и отображение фото профиля
+        function uploadPicture() {
+            const fileInput = document.getElementById('upload-picture');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    document.getElementById('profile-image').src = imageUrl;
+                    localStorage.setItem('profileImage', imageUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Сохранение изменений профиля
+        function saveProfile() {
+            const username = document.getElementById('username').value;
+            const phone = document.getElementById('phone').value;
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const savedPassword = localStorage.getItem('password') || '';
+
+            if (!username || !phone) {
+                alert("Пожалуйста, заполните все обязательные поля.");
+                return;
+            }
+
+            if (currentPassword !== savedPassword) {
+                alert("Текущий пароль введен неверно.");
+                return;
+            }
+
+            localStorage.setItem('loggedInUser', username);
+            localStorage.setItem('phone', phone);
+
+            if (newPassword) {
+                localStorage.setItem('password', newPassword);
+            }
+
+            alert("Изменения сохранены!");
+        }
+
+        // Переключение видимости пароля
+        function togglePasswordVisibility(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleButton = passwordField.nextElementSibling;
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.textContent = "Скрыть";
+            } else {
+                passwordField.type = "password";
+                toggleButton.textContent = "Показать";
+            }
+        }
+    </script>
+</body>
+
+</html>
